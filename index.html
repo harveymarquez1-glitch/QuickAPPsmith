@@ -260,7 +260,8 @@ input[type=date].in{min-width:0;-webkit-appearance:none;appearance:none;min-heig
 .done .btns{display:grid;gap:10px}
 
 /* ═════════ Formatos S+N (réplica de los Excel originales) ═════════ */
-.page{width:8.5in;height:11in;position:relative;overflow:hidden;background:#fff;color:#000;break-inside:avoid;page-break-inside:avoid}
+.page{width:8.5in;height:11in;position:relative;overflow:hidden;background:#fff;color:#000;break-inside:avoid;page-break-inside:avoid;page:vert}
+.page.land{width:11in;height:8.5in;page:horiz}
 .page .sheet{position:absolute}
 .page .logo{position:absolute}
 .page,.page *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -282,10 +283,10 @@ input[type=date].in{min-width:0;-webkit-appearance:none;appearance:none;min-heig
 .frm .cb{display:inline-block;width:13px;height:13px;border:1.3px solid #3c3c3c;border-radius:2px;vertical-align:middle;position:relative;background:#fff}
 .frm .cb.x:after{content:'';position:absolute;left:3.5px;top:0;width:4px;height:8px;border:solid #000;border-width:0 2px 2px 0;transform:rotate(45deg)}
 .frm .anx-box{position:relative}
-.frm .grid{position:absolute;left:8px;right:8px;top:8px;bottom:8px;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(2,1fr);gap:8px}
+.frm .grid{position:absolute;left:6px;right:6px;top:6px;bottom:6px;display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(4,1fr);gap:6px}
 .frm .grid figure{margin:0;display:flex;flex-direction:column;min-height:0;border:1px solid #bbb}
 .frm .grid img{flex:1;min-height:0;width:100%;object-fit:contain;background:#f3f3f3}
-.frm .grid figcaption{font-size:7pt;padding:3px;white-space:normal;line-height:1.2;text-align:left;font-weight:normal}
+.frm .grid figcaption{font-size:6.5pt;padding:2px 3px;white-space:normal;line-height:1.2;text-align:left;font-weight:normal}
 /* Rótulo estado de calidad (de VV-FRM-12210) */
 .rot{position:absolute;inset:0;padding:18px 22px 0;font-family:Verdana,'DejaVu Sans',sans-serif;white-space:normal;text-align:left;vertical-align:top}
 .rot .rt{text-align:center;font-weight:bold;font-size:10pt;margin-top:4px}
@@ -294,20 +295,24 @@ input[type=date].in{min-width:0;-webkit-appearance:none;appearance:none;min-heig
 .rot .lab{font-weight:bold;font-size:9pt;line-height:1.15}
 .rot .lab.big{font-size:10pt}
 .rot .val{border-bottom:1.3px solid #000;min-height:16px;font-family:Arial,Helvetica,sans-serif;font-size:10pt;text-align:center;padding:0 3px 1px;white-space:nowrap;overflow:hidden}
-.rot .r2{display:flex;align-items:center;margin-top:36px;font-size:10pt}
+.rot .r2{display:flex;align-items:center;gap:18px;margin-top:36px;font-size:10pt}
+.rot .r2 .izq{flex:1;display:flex;align-items:center}
+.rot .r2 .der{width:46%;display:flex;align-items:center;justify-content:flex-end;flex:none}
 .rot .bx{display:inline-block;width:27px;height:27px;border:1.5px solid #000;position:relative;flex:none}
 .rot .bx.x:after{content:'';position:absolute;left:8px;top:2px;width:8px;height:15px;border:solid #000;border-width:0 3px 3px 0;transform:rotate(45deg)}
 .rot .r3{display:flex;gap:18px;margin-top:16px}
 .rot .firmas{flex:1;padding-top:6px}
 .rot .firma{display:flex;align-items:flex-end;gap:4px;font-size:10pt;margin:10px 0 0 30px}
 .rot .firma + .firma{margin-top:44px}
-.rot .firma .val{flex:none;width:150px;text-align:left}
-.rot table.it{border-collapse:collapse;width:300px;border:1.5px solid #000;flex:none;margin-right:2px}
+.rot .firma .val{flex:none;width:190px;text-align:left}
+.rot table.it{border-collapse:collapse;width:46%;table-layout:fixed;border:1.5px solid #000;flex:none;margin-right:2px}
 .rot table.it td{border-top:1px solid #000;height:24px;font-family:Arial,Helvetica,sans-serif;font-size:9pt;padding:0 6px;white-space:nowrap;overflow:hidden;vertical-align:middle}
 .rot table.it .ih{background:#F79646;font-family:Verdana,sans-serif;font-weight:bold;font-size:10pt;border-top:0;height:20px}
 
 #print-root{display:none}
 @page{size:letter portrait;margin:0}
+@page vert{size:letter portrait;margin:0}
+@page horiz{size:letter landscape;margin:0}
 @media print{
   html,body{background:#fff}
   .app,.bar,.toast,.done,.viewer,.visor{display:none!important}
@@ -1057,7 +1062,7 @@ function renderPreview(){
   const rows = seleccionados(), wrap = $('#pv-wrap');
   if (Imp.formato === 'reg'){
     const hojas = Math.max(1, Math.ceil(rows.length / FILAS_REG));
-    const anexos = $('#t-anx').checked && rows.length ? Math.ceil(rows.length / 8) : 0;
+    const anexos = $('#t-anx').checked && rows.length ? Math.ceil(rows.length / FOTOS_ANEXO) : 0;
     $('#pv-title').textContent = 'Vista previa · VV-FRM-12209';
     $('#pv-info').textContent = rows.length + ' fila(s) · ' + (hojas + anexos) + ' página(s)';
     wrap.innerHTML = paginaRegistro(rows.slice(0, FILAS_REG));
@@ -1066,9 +1071,10 @@ function renderPreview(){
     $('#pv-info').textContent = rows.length ? rows.length + ' control(es) · 1 página c/u' + (rows.length > 1 ? ' · se muestra el primero' : '') : 'Seleccione un check in';
     wrap.innerHTML = paginaControl(rows[0] || null);
   }
-  const s = (wrap.clientWidth || 600) / 816, pg = wrap.firstElementChild;
+  const pg = wrap.firstElementChild, horiz = pg.classList.contains('land');
+  const s = (wrap.clientWidth || 600) / (horiz ? 1056 : 816);
   pg.style.transform = 'scale(' + s + ')'; pg.style.transformOrigin = '0 0';
-  wrap.style.height = Math.round(1056 * s) + 'px';
+  wrap.style.height = Math.round((horiz ? 816 : 1056) * s) + 'px';
   ajustarTextos(wrap);
 }
 
@@ -1086,10 +1092,20 @@ const FILAS_REG = 26;
 const pt = v => (v * 4 / 3).toFixed(2) + 'px';
 const tr = (h, cells) => '<tr style="height:' + pt(h) + '">' + cells + '</tr>';
 const colgroup = cols => '<colgroup>' + cols.map(w => '<col style="width:' + w + 'px">').join('') + '</colgroup>';
-const COLS_REG = [10, 123, 64, 66, 166, 138, 47, 43, 148, 124];   // A–J en píxeles de Excel
-const Z_REG = 0.82;                                               // 8 in imprimibles / 929 px de tabla
+/* Las columnas conservan su proporción del Excel y se estiran hasta los márgenes de la hoja,
+   para que el formato quede justo de izquierda a derecha. */
+function escalarCols(cols, ancho){
+  const tot = cols.reduce((a, b) => a + b, 0); let acc = 0;
+  return cols.map((w, i) => { const v = i === cols.length - 1 ? ancho - acc : Math.round(w * ancho / tot); acc += v; return v; });
+}
+const COLS_REG_X = [10, 123, 64, 66, 166, 138, 47, 43, 148, 124];  // A–J en píxeles de Excel (929 px)
+const Z_REG = 0.85;                                                // carta horizontal: 26 filas o anexos caben en 1 hoja
+const W_REG = Math.floor(10.5 * 96 / Z_REG);                       // 11 in − márgenes 0.25 in
+const COLS_REG = escalarCols(COLS_REG_X, W_REG);
+const F_REG = W_REG / 929;
+const FOTOS_ANEXO = 20;                                            // 4 filas × 5 fotos por hoja
 const CONF_SN = '<b>CONFIDENCIAL Y PRIVADO -</b> El presente documento contiene información que es confidencial y privada de Smith &amp; Nephew y está previsto sólo para uso por Smith &amp; Nephew y sus fabricantes.  No se debe reproducir o copiar en su totalidad o en parte, ni se debe divulgar el contenido por ningún medio sin el permiso escrito previo de Smith &amp; Nephew, ni ninguna persona debe hacer uso de él, ya que es lo contrario de los deseos expresados o implícitos de Smith &amp; Nephew.';
-const hoja = (z, ml, mt, html) => '<div class="page"><div class="sheet" style="zoom:' + z + ';left:calc(' + ml + 'in / ' + z + ');top:calc(' + mt + 'in / ' + z + ')">' + html + '</div></div>';
+const hoja = (z, ml, mt, html, horiz) => '<div class="page' + (horiz ? ' land' : '') + '"><div class="sheet" style="zoom:' + z + ';left:calc(' + ml + 'in / ' + z + ');top:calc(' + mt + 'in / ' + z + ')">' + html + '</div></div>';
 
 function encabezadoReg(pagina){
   return tr(15.75, '<td></td><td class="b bold c m w" colspan="6" rowspan="4" style="font-size:11pt">Formato, Registro Diario de Instrumentales y Equipos de Poder Lavados</td><td class="b bold c m" colspan="3">Smith+Nephew COLOMBIA</td>') +
@@ -1107,8 +1123,8 @@ function paginaRegistro(rows){
   }
   const vacia = h => tr(h, '<td colspan="10"></td>');
   return hoja(Z_REG, 0.25, 0.75,
-    '<img class="logo" src="' + LOGO_SN + '" style="left:678px;top:4px;width:242px;height:32px" alt="">' +
-    '<table class="frm" style="width:929px">' + colgroup(COLS_REG) +
+    '<img class="logo" src="' + LOGO_SN + '" style="left:' + Math.round(920 * F_REG - 242) + 'px;top:4px;width:242px;height:32px" alt="">' +
+    '<table class="frm" style="width:' + W_REG + 'px">' + colgroup(COLS_REG) +
     vacia(13.8) + vacia(13.8) + encabezadoReg('1 de 1') + vacia(13.8) +
     tr(23.25, '<td></td><td class="b or2 bold c m" rowspan="2">FECHA</td><td class="b or2 bold c m w" rowspan="2">CICLO No.</td><td class="b or2 bold c m w" rowspan="2">CICLO SHORT</td><td class="b or2 bold c m w" rowspan="2">SERIAL SET DE INSTRUMENTAL</td><td class="b or2 bold c m w" rowspan="2">REGISTRADO POR</td><td class="b or2 bold c m w" colspan="2">CICLO CUMPLIDO</td><td class="b or2 bold c m" colspan="2" rowspan="2">OBSERVACIONES</td>') +
     tr(18.75, '<td></td><td class="b or2 bold c m">SI</td><td class="b or2 bold c m">NO</td>') +
@@ -1116,27 +1132,30 @@ function paginaRegistro(rows){
     tr(13.8, '<td></td><td class="note8" colspan="9">*Agregar filas según corresponda</td>') +
     tr(15, '<td colspan="10"></td>') +
     tr(15, '<td></td><td class="conf7" colspan="9" rowspan="2">' + CONF_SN + '</td>') + tr(13.8, '<td></td>') +
-    '</table>');
+    '</table>', true);
 }
 function paginaAnexosReg(rows, fotos){
   const figs = rows.map(r => '<figure><img src="' + (fotos[r.fotoId] || r.miniatura || '') + '" alt=""><figcaption>' + esc(fCorta(new Date(r.ts))) + ' · ' + esc(r.cicloNo) + ' · ' + esc(r.serial) + '</figcaption></figure>').join('');
-  let cuerpo = tr(13.8, '<td></td><td class="b bold c m anx-box" colspan="9" rowspan="21"><div class="grid">' + figs + '</div></td>');
-  for (let i = 0; i < 20; i++) cuerpo += tr(13.8, '<td></td>');
+  let cuerpo = tr(13.8, '<td></td><td class="b bold c m anx-box" colspan="9" rowspan="30"><div class="grid">' + figs + '</div></td>');
+  for (let i = 0; i < 29; i++) cuerpo += tr(13.8, '<td></td>');
   const vacia = h => tr(h, '<td colspan="10"></td>');
   return hoja(Z_REG, 0.25, 0.75,
-    '<img class="logo" src="' + LOGO_SN + '" style="left:654px;top:3px;width:241px;height:32px" alt="">' +
-    '<table class="frm" style="width:929px">' + colgroup(COLS_REG) +
+    '<img class="logo" src="' + LOGO_SN + '" style="left:' + Math.round(895 * F_REG - 241) + 'px;top:3px;width:241px;height:32px" alt="">' +
+    '<table class="frm" style="width:' + W_REG + 'px">' + colgroup(COLS_REG) +
     vacia(13.8) + vacia(13.8) + vacia(13.8) + encabezadoReg('2 de 2') +
     tr(13.8, '<td></td><td class="bold" colspan="9">ANEXOS</td>') + cuerpo +
     tr(13.8, '<td></td><td class="note8" colspan="9">*Agregar filas según corresponda</td>') +
     vacia(13.8) +
     tr(15.75, '<td></td><td class="conf7" colspan="9" rowspan="2">' + CONF_SN + '</td>') + tr(13.8, '<td></td>') +
-    '</table>');
+    '</table>', true);
 }
 
 /* ───────── Formato VV-FRM-17148 · Control de Lavado + Rótulo estado de calidad ───────── */
-const COLS_CTL = [142, 30, 63, 30, 64, 64, 59, 100, 75, 75];      // A–J en píxeles de Excel
-const Z_CTL = 0.75;                                                // 77 % del original, ajustado a 1 página
+const COLS_CTL_X = [142, 30, 63, 30, 64, 64, 59, 100, 75, 75];    // A–J en píxeles de Excel (702 px)
+const Z_CTL = 0.75;                                                // escala 75 % del formato (1 página)
+const W_CTL = Math.floor(7.1 * 96 / Z_CTL);                        // 8.5 in − márgenes 0.7 in a cada lado
+const COLS_CTL = escalarCols(COLS_CTL_X, W_CTL);
+const F_CTL = W_CTL / 702;
 const CONF_CTL = '<b>CONFIDENCIAL Y PRIVADO -&nbsp;</b>El presente documento contiene información que es confidencial y privada de Smith &amp; Nephew y está previsto sólo para uso por Smith &amp; Nephew y sus fabricantes.&nbsp; No se debe reproducir o copiar en su totalidad o en parte, ni se debe divulgar el contenido por ningún medio sin el permiso escrito previo de Smith &amp; Nephew, ni ninguna persona debe hacer uso de él, ya que es lo contrario de los deseos expresados o implícitos de Smith &amp; Nephew';
 const NOTA_CTL = '<b>NOTA: </b>Informamos que, de acuerdo con el procedimiento del centro de lavado, Smith+Nephew cumple a cabalidad con los parámetros establecidos en la resolución 4002 del 2007, por medio del cual tenemos vigente nuestro CCAA. Garantizamos que realizamos proceso de lavado y limpieza de instrumentales y equipos biomédicos mediante el uso de lavadoras automatizadas ultrasónicas o termodesinfectoras, utilizando insumos de limpieza recomendados por sus fabricantes. ';
 const cbx = on => '<span class="cb' + (on ? ' x' : '') + '"></span>';
@@ -1150,14 +1169,14 @@ function rotulo(r){
     '<div class="rt">RÓTULO ESTADO DE CALIDAD</div>' +
     '<div class="consec">' + v(r && r.consecutivo) + '</div>' +
     '<div class="r1">' +
-      '<div class="lab big">CÓDIGO SET<br>INSTRUMENTAL</div><div class="val fit" style="width:150px">' + v(r && r.codigo) + '</div>' +
-      '<div class="lab" style="margin-left:6px">CICLO LAVADO No.</div><div class="val fit" style="width:96px">' + v(r && r.metodo) + '</div>' +
-      '<div class="lab" style="margin-left:6px">NÚMERO DE BANDEJAS</div><div class="val" style="width:34px">' + v(r && r.bandejas) + '</div>' +
+      '<div class="lab big">CÓDIGO SET<br>INSTRUMENTAL</div><div class="val fit" style="width:190px">' + v(r && r.codigo) + '</div>' +
+      '<div class="lab" style="margin-left:auto">CICLO LAVADO No.</div><div class="val fit" style="width:120px">' + v(r && r.metodo) + '</div>' +
+      '<div class="lab" style="margin-left:auto">NÚMERO DE BANDEJAS</div><div class="val" style="width:34px">' + v(r && r.bandejas) + '</div>' +
     '</div>' +
     '<div class="r2">' +
-      '<span style="margin-left:70px">LÍMPIO</span><span class="bx' + (r && r.limpio === 'SI' ? ' x' : '') + '" style="margin-left:9px"></span>' +
-      '<span style="margin-left:8px">COMPLETO</span><span class="bx' + (com ? ' x' : '') + '" style="margin-left:126px"></span>' +
-      '<span style="margin-left:auto">IMCOMPLETO</span><span class="bx' + (inc ? ' x' : '') + '" style="margin-left:9px;margin-right:2px"></span>' +
+      '<div class="izq"><span style="margin-left:90px">LÍMPIO</span><span class="bx' + (r && r.limpio === 'SI' ? ' x' : '') + '" style="margin-left:9px"></span>' +
+      '<span style="margin-left:8px">COMPLETO</span><span class="bx' + (com ? ' x' : '') + '" style="margin-left:auto"></span></div>' +
+      '<div class="der"><span>IMCOMPLETO</span><span class="bx' + (inc ? ' x' : '') + '" style="margin-left:9px;margin-right:2px"></span></div>' +
     '</div>' +
     '<div class="r3">' +
       '<div class="firmas">' +
@@ -1177,8 +1196,8 @@ function paginaControl(r){
   let rot = tr(13.5, '<td class="bl br bb" colspan="10" rowspan="22" style="position:relative;padding:0">' + rotulo(r) + '</td>');
   for (let i = 0; i < 21; i++) rot += tr(13.5, '');
   return hoja(Z_CTL, 0.7, 0.75,
-    '<img class="logo" src="' + LOGO_SN_CTL + '" style="left:460px;top:7px;width:229px;height:29px" alt="">' +
-    '<table class="frm" style="width:702px">' + colgroup(COLS_CTL) +
+    '<img class="logo" src="' + LOGO_SN_CTL + '" style="left:' + Math.round(689 * F_CTL - 229) + 'px;top:7px;width:229px;height:29px" alt="">' +
+    '<table class="frm" style="width:' + W_CTL + 'px">' + colgroup(COLS_CTL) +
     tr(29.5, '<td colspan="10"></td>') +
     tr(13.5, '<td class="b c m w bold" colspan="6" rowspan="4"> Formato, Control de Lavado de Instrumental Quirúrgico</td><td class="b bold c" colspan="4">Smith+Nephew COLOMBIA</td>') +
     tr(13.5, '<td class="b l" colspan="2">Número de Documento</td><td class="b l" colspan="2">VV-FRM-17148</td>') +
@@ -1238,9 +1257,13 @@ $('#b-print').addEventListener('click', async () => {
       let html = '';
       for (let i = 0; i < rows.length; i += FILAS_REG) html += paginaRegistro(rows.slice(i, i + FILAS_REG));
       if ($('#t-anx').checked){
-        const res = await api('getFotos', rows.map(r => r.fotoId).filter(Boolean));
-        const fotos = {}; res.forEach(f => fotos[f.id] = f.data);
-        for (let i = 0; i < rows.length; i += 8) html += paginaAnexosReg(rows.slice(i, i + 8), fotos);
+        // todas las fotos de evidencia, descargadas en tandas para no saturar el servidor
+        const ids = rows.map(r => r.fotoId).filter(Boolean), fotos = {};
+        for (let i = 0; i < ids.length; i += 8){
+          btn.querySelector('span') && (btn.lastChild.textContent = 'Fotos ' + Math.min(i + 8, ids.length) + ' de ' + ids.length + '…');
+          try { ((await api('getFotos', ids.slice(i, i + 8))) || []).forEach(f => { if (f.data) fotos[f.id] = f.data; }); } catch(_){}
+        }
+        for (let i = 0; i < rows.length; i += FOTOS_ANEXO) html += paginaAnexosReg(rows.slice(i, i + FOTOS_ANEXO), fotos);
       }
       await imprimirHTML(html);
     }
